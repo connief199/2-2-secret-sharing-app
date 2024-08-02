@@ -1,34 +1,38 @@
-// Function to XOR two byte arrays
-function xorBytes(a, b) {
-    if (a.length !== b.length) {
-        throw new Error("Byte arrays must be of the same length for XOR operation.");
+// Convert a hexadecimal string to a bit array
+function hexToBits(hex) {
+    let bits = [];
+    for (let i = 0; i < hex.length; i += 2) {
+        let byte = parseInt(hex.substr(i, 2), 16);
+        for (let j = 7; j >= 0; j--) {
+            bits.push((byte >> j) & 1);
+        }
     }
-    let result = new Uint8Array(a.length);
+    return bits;
+}
+
+// Convert a bit array to a hexadecimal string
+function bitsToHex(bits) {
+    let hex = '';
+    for (let i = 0; i < bits.length; i += 8) {
+        let byte = 0;
+        for (let j = 0; j < 8; j++) {
+            byte = (byte << 1) | bits[i + j];
+        }
+        hex += byte.toString(16).padStart(2, '0');
+    }
+    return hex;
+}
+
+// XOR two bit arrays
+function xorBits(a, b) {
+    if (a.length !== b.length) {
+        throw new Error("Bit arrays must be of the same length for XOR operation.");
+    }
+    let result = new Array(a.length);
     for (let i = 0; i < a.length; i++) {
         result[i] = a[i] ^ b[i];
     }
     return result;
-}
-
-// Convert a hexadecimal string to a byte array
-function hexToBytes(hex) {
-    if (hex.length % 2 !== 0) {
-        throw new Error("Hexadecimal string must have an even length.");
-    }
-    let bytes = [];
-    for (let i = 0; i < hex.length; i += 2) {
-        bytes.push(parseInt(hex.substr(i, 2), 16));
-    }
-    return new Uint8Array(bytes);
-}
-
-// Convert a byte array to a hexadecimal string
-function bytesToHex(bytes) {
-    let hex = '';
-    for (let i = 0; i < bytes.length; i++) {
-        hex += bytes[i].toString(16).padStart(2, '0');
-    }
-    return hex;
 }
 
 // Generate Share 1 and Share 2
@@ -41,20 +45,29 @@ async function generateShares() {
         return;
     }
 
-    // Convert the secret into a 31-byte array
-    let secretBytes = new Uint8Array(31);
+    // Convert the secret into a 31-byte bit array
+    let secretBits = [];
     for (let i = 0; i < 31; i++) {
-        secretBytes[i] = parseInt(secret.substr(i * 2, 2), 10);
+        let byte = parseInt(secret.substr(i * 2, 2), 10);
+        for (let j = 7; j >= 0; j--) {
+            secretBits.push((byte >> j) & 1);
+        }
     }
 
     // Generate SHA-512 hash and truncate to 31 bytes for Share 1
+    let secretBytes = new Uint8Array(secretBits.length / 8);
+    for (let i = 0; i < secretBytes.length; i++) {
+        secretBytes[i] = parseInt(secretBits.slice(i * 8, (i + 1) * 8).join(''), 2);
+    }
     let hashBytes = await crypto.subtle.digest('SHA-512', secretBytes);
-    hashBytes = new Uint8Array(hashBytes).slice(0, 31);
-    document.getElementById('share1').value = bytesToHex(hashBytes);
+    let hashBits = Array.from(new Uint8Array(hashBytes)).slice(0, 31).flatMap(byte => 
+        Array.from({ length: 8 }, (_, i) => (byte >> (7 - i)) & 1)
+    );
+    document.getElementById('share1').value = bitsToHex(hashBits);
 
-    // XOR secret bytes with hash bytes to create Share 2
-    let share2Bytes = xorBytes(secretBytes, hashBytes);
-    document.getElementById('share2').value = bytesToHex(share2Bytes);
+    // XOR secret bits with hash bits to create Share 2
+    let share2Bits = xorBits(secretBits, hashBits);
+    document.getElementById('share2').value = bitsToHex(share2Bits);
 }
 
 // Reconstruct the secret from Share 1 and Share 2
@@ -68,16 +81,20 @@ function reconstructSecret() {
         return;
     }
 
-    let share1 = hexToBytes(share1Hex);
-    let share2 = hexToBytes(share2Hex);
+    let share1Bits = hexToBits(share1Hex);
+    let share2Bits = hexToBits(share2Hex);
 
-    // XOR Share 1 and Share 2 to reconstruct the original secret bytes
-    let secretBytes = xorBytes(share1, share2);
+    // XOR Share 1 and Share 2 to reconstruct the original secret bits
+    let secretBits = xorBits(share1Bits, share2Bits);
 
-    // Convert bytes back to the original secret format
+    // Convert bits back to the original secret format
     let secret = '';
-    for (let i = 0; i < secretBytes.length; i++) {
-        secret += secretBytes[i].toString().padStart(2, '0'); // Convert byte back to digit
+    for (let i = 0; i < secretBits.length; i += 8) {
+        let byte = 0;
+        for (let j = 0; j < 8; j++) {
+            byte = (byte << 1) | secretBits[i + j];
+        }
+        secret += byte.toString().padStart(2, '0'); // Convert byte back to digit
     }
 
     document.getElementById('result').value = secret;
