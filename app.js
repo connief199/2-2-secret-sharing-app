@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return hash.toString(CryptoJS.enc.Hex).slice(0, 64);
     }
 
-    // Function to XOR two hex strings
+    // Function to XOR two hex strings of equal length
     function xorHexStrings(a, b) {
         let result = '';
         for (let i = 0; i < a.length; i += 2) {
@@ -36,10 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Convert the secret into a hex string
-        // Each digit is represented as a single hexadecimal character
+        // Convert the secret into a hex string (each digit is encoded as a single hex character)
         const secretHex = secret.split('').map(digit => parseInt(digit, 10).toString(16)).join('');
-        
+
         // Debugging: Log the converted secretHex
         console.log(`Secret Hex: ${secretHex}`);
 
@@ -56,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Share 1 (Truncated): ${share1}`);
 
         // XOR the secretHex with share1 to get share2
-        const share2 = xorHexStrings(secretHex, share1);
+        const share2 = xorHexStrings(secretHex.padStart(64, '0'), share1);
 
         // Debugging: Log share2
         console.log(`Share 2: ${share2}`);
