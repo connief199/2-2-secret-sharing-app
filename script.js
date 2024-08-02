@@ -49,7 +49,7 @@ async function generateShares() {
     try {
         // Compute SHA-512 hash and truncate to 31 bytes
         let hashBuffer = await crypto.subtle.digest('SHA-512', secretBytes.buffer);
-        let hashBytes = new Uint8Array(hashBuffer).slice(0, 31);
+        let hashBytes = new Uint8Array(hashBuffer).slice(0, 31); // Truncate hash to 31 bytes
 
         // Ensure that secretBytes and hashBytes are the same length
         if (secretBytes.length !== hashBytes.length) {
