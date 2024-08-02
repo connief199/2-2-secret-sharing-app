@@ -59,7 +59,7 @@ function generateShare1(secret) {
  * @returns {number[]} The result of XOR operation as an array of numbers.
  */
 function xorArrays(array1, array2) {
-    return array1.map((num, index) => num ^ array2[index]);
+    return array1.map((num, index) => (num + array2[index]) % 6);
 }
 
 /**
