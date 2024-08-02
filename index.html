@@ -4,40 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XOR Share Generator</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>XOR Share Generator</h1>
-    
-    <div>
-        <h2>Generate Shares</h2>
-        <label for="secret">Enter Secret (as 31 bytes in hex):</label>
-        <input type="text" id="secret" placeholder="e.g., 000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f">
-        <button onclick="generateShares()">Generate Shares</button>
-    </div>
-    
-    <div>
-        <h2>Share 1</h2>
-        <textarea id="share1" rows="2" cols="64" readonly></textarea>
-    </div>
-    
-    <div>
-        <h2>Share 2</h2>
-        <textarea id="share2" rows="2" cols="64" readonly></textarea>
-    </div>
-    
-    <div>
-        <h2>Reconstruct Secret</h2>
-        <label for="share1Input">Share 1 (hex):</label>
-        <input type="text" id="share1Input" placeholder="e.g., ...">
-        <label for="share2Input">Share 2 (hex):</label>
-        <input type="text" id="share2Input" placeholder="e.g., ...">
-        <button onclick="reconstructSecret()">Reconstruct Secret</button>
-    </div>
-    
-    <div>
-        <h2>Reconstructed Secret</h2>
-        <textarea id="result" rows="2" cols="64" readonly></textarea>
+    <div class="container">
+        <h1>XOR Share Generator</h1>
+
+        <div class="section">
+            <h2>Generate Shares</h2>
+            <p>Enter the secret (as 31 bytes in hex):</p>
+            <input type="text" id="secret" placeholder="e.g., 000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f">
+            <button onclick="generateShares()">Generate Shares</button>
+        </div>
+
+        <div class="section">
+            <h2>Share 1</h2>
+            <textarea id="share1" rows="2" cols="64" readonly></textarea>
+            <button onclick="copyToClipboard('share1')">Copy to Clipboard</button>
+        </div>
+
+        <div class="section">
+            <h2>Share 2</h2>
+            <textarea id="share2" rows="2" cols="64" readonly></textarea>
+            <button onclick="copyToClipboard('share2')">Copy to Clipboard</button>
+        </div>
+
+        <div class="section">
+            <h2>Reconstruct Secret</h2>
+            <p>Enter Share 1 and Share 2 (as hex):</p>
+            <input type="text" id="share1Input" placeholder="e.g., ...">
+            <input type="text" id="share2Input" placeholder="e.g., ...">
+            <button onclick="reconstructSecret()">Reconstruct Secret</button>
+        </div>
+
+        <div class="section">
+            <h2>Reconstructed Secret</h2>
+            <textarea id="result" rows="2" cols="64" readonly></textarea>
+            <button onclick="copyToClipboard('result')">Copy to Clipboard</button>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
     </div>
 </body>
 </html>
