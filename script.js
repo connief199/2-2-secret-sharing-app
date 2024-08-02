@@ -37,17 +37,21 @@ function bytesToHex(bytes) {
 async function generateShares() {
     let secretString = document.getElementById('secret').value.trim();
 
+    // Validate the secret input
     if (!/^[0-5]{62}$/.test(secretString)) {
         showError("The secret must be a continuous string of 62 integers, each between 0 and 5.");
         return;
     }
 
+    // Convert the secret to a byte array
     let secretBytes = new Uint8Array(secretString.split('').map(Number));
     
     try {
+        // Compute SHA-512 hash and truncate to 31 bytes
         let hashBuffer = await crypto.subtle.digest('SHA-512', secretBytes);
         let hashBytes = new Uint8Array(hashBuffer).slice(0, 31);
 
+        // Generate Share 1 and Share 2
         let share1 = bytesToHex(hashBytes);
         let share2Bytes = xorBytes(secretBytes, hashBytes);
         
@@ -55,8 +59,10 @@ async function generateShares() {
 
         let share2 = bytesToHex(share2Bytes);
 
+        // Display the shares
         document.getElementById('share1').value = share1;
         document.getElementById('share2').value = share2;
+        document.getElementById('error-message').textContent = ''; // Clear any previous error
     } catch (error) {
         showError("Error generating shares: " + error.message);
     }
@@ -67,22 +73,26 @@ function reconstructSecret() {
     let share1Hex = document.getElementById('share1Input').value.trim();
     let share2Hex = document.getElementById('share2Input').value.trim();
 
+    // Validate the shares
     if (share1Hex.length !== 62 || share2Hex.length !== 62) {
         showError("Both shares must be 31 bytes long in hexadecimal format.");
         return;
     }
 
+    // Convert shares to byte arrays
     let share1Bytes = hexToBytes(share1Hex);
     let share2Bytes = hexToBytes(share2Hex);
 
     if (share1Bytes === null || share2Bytes === null) return;
 
+    // Reconstruct the secret
     let secretBytes = xorBytes(share1Bytes, share2Bytes);
 
     if (secretBytes === null) return;
 
     let secret = bytesToHex(secretBytes);
     document.getElementById('result').value = secret;
+    document.getElementById('error-message').textContent = ''; // Clear any previous error
 }
 
 // Show error message
