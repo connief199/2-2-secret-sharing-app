@@ -31,13 +31,13 @@ function bytesToHex(bytes) {
 function generateShares() {
     let secret = document.getElementById('secret').value;
     
-    // Validate the secret input to ensure it contains exactly 62 digits each between 0-5
+    // Validate the secret input
     if (!/^[0-5]{62}$/.test(secret)) {
         alert("The secret must be exactly 62 digits long, with each digit between 0 and 5.");
         return;
     }
 
-    // Convert the secret into a 31-byte array (since 62 digits / 2 = 31 bytes)
+    // Convert the secret into a 31-byte array
     let secretBytes = new Uint8Array(31);
 
     for (let i = 0; i < 31; i++) {
