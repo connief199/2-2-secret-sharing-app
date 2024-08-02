@@ -16,10 +16,25 @@
         </form>
 
         <div id="result" class="result">
-            <h2>Results</h2>
+            <h2>Generated Shares</h2>
             <p id="original-secret">Original Secret: </p>
             <p id="share1">Share 1: </p>
             <p id="share2">Share 2: </p>
+        </div>
+
+        <h2>Reconstruct Secret</h2>
+        <form id="reconstruct-form">
+            <label for="share1-input">Enter Share 1:</label>
+            <input type="text" id="share1-input" placeholder="e.g., 524301234523..." required>
+            
+            <label for="share2-input">Enter Share 2:</label>
+            <input type="text" id="share2-input" placeholder="e.g., 102345301234..." required>
+            
+            <button type="button" id="reconstruct-secret">Reconstruct Secret</button>
+        </form>
+
+        <div id="reconstruction-result" class="result">
+            <h2>Reconstructed Secret</h2>
             <p id="reconstructed-secret">Reconstructed Secret: </p>
         </div>
     </div>
