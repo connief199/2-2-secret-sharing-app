@@ -49,21 +49,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calculate SHA512 of the secret
         const sha512Hash = CryptoJS.SHA512(CryptoJS.lib.WordArray.create(secretBytes));
 
+        // Debug: Log the full SHA512 hash
+        console.log('Full SHA512 hash:', sha512Hash.toString(CryptoJS.enc.Hex));
+
         // Truncate the SHA512 hash to 256 bits (64 hex characters) to get SHARE 1
         const share1 = truncate256(sha512Hash);
 
         // Convert SHARE 1 to a byte array
         const share1Bytes = hexToBytes(share1);
 
+        // Debug: Log SHARE 1
+        console.log('Truncated SHA512 to SHARE 1:', share1);
+
         // Ensure that the secret byte array is the same length as the truncated hash byte array
-        // Padding or truncating if necessary
-        const paddedSecretBytes = Array.from({ length: share1Bytes.length }, (_, i) => secretBytes[i % secretBytes.length]);
+        const paddedSecretBytes = new Uint8Array(share1Bytes.length);
+        for (let i = 0; i < paddedSecretBytes.length; i++) {
+            paddedSecretBytes[i] = secretBytes[i % secretBytes.length];
+        }
+
+        // Debug: Log padded secret bytes
+        console.log('Padded Secret Bytes:', paddedSecretBytes);
 
         // XOR the secret byte array with share1 byte array to get share2
         const share2Bytes = xorByteArrays(paddedSecretBytes, share1Bytes);
 
         // Convert share2Bytes back to a hex string
         const share2 = bytesToHex(share2Bytes);
+
+        // Debug: Log SHARE 2
+        console.log('SHARE 2:', share2);
 
         // Display the shares
         share1Output.textContent = share1;
@@ -90,6 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Convert the byte array back to the original secret (digits 0-5)
         const secret = secretBytes.map(byte => byte.toString()).join('').slice(0, 62);
+
+        // Debug: Log the reconstructed secret
+        console.log('Reconstructed Secret:', secret);
 
         // Display the reconstructed secret
         rebuiltSecretOutput.textContent = secret;
