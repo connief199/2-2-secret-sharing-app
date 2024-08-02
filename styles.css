@@ -1,68 +1,69 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: #f4f4f9;
     margin: 0;
-    padding: 0;
+    padding: 20px;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
-    background: #fff;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    text-align: center;
+    font-size: 24px;
     color: #333;
+    text-align: center;
+}
+
+form {
     margin-bottom: 20px;
 }
 
-.section {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #555;
 }
 
-input[type="text"],
-textarea {
-    width: calc(100% - 20px);
-    padding: 12px;
-    margin: 10px 0;
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box;
     font-size: 16px;
 }
 
 button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
+    padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
+    border: none;
+    border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-right: 10px;
 }
 
 button:hover {
     background-color: #0056b3;
 }
 
-.error-message {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-    display: block;
+.result {
+    background-color: #fafafa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
-textarea {
-    resize: none;
+p {
+    font-size: 14px;
+    color: #333;
+    margin: 5px 0;
 }
