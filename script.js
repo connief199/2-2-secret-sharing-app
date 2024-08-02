@@ -28,9 +28,9 @@ function bytesToHex(bytes) {
     return hex;
 }
 
-function generateShares() {
+async function generateShares() {
     let secret = document.getElementById('secret').value;
-    
+
     // Validate the secret input
     if (!/^[0-5]{62}$/.test(secret)) {
         alert("The secret must be exactly 62 digits long, with each digit between 0 and 5.");
@@ -39,22 +39,18 @@ function generateShares() {
 
     // Convert the secret into a 31-byte array
     let secretBytes = new Uint8Array(31);
-
     for (let i = 0; i < 31; i++) {
         secretBytes[i] = parseInt(secret.substr(i * 2, 2), 10);
     }
 
     // Generate SHA-512 hash and truncate to 31 bytes for Share 1
-    crypto.subtle.digest('SHA-512', secretBytes).then(digest => {
-        let hashBytes = new Uint8Array(digest).slice(0, 31);
-        document.getElementById('share1').value = bytesToHex(hashBytes);
+    let hashBytes = await crypto.subtle.digest('SHA-512', secretBytes);
+    hashBytes = new Uint8Array(hashBytes).slice(0, 31);
+    document.getElementById('share1').value = bytesToHex(hashBytes);
 
-        // XOR secret bytes with hash bytes to create Share 2
-        let share2Bytes = xorBytes(secretBytes, hashBytes);
-        document.getElementById('share2').value = bytesToHex(share2Bytes);
-    }).catch(error => {
-        alert("Error generating shares: " + error.message);
-    });
+    // XOR secret bytes with hash bytes to create Share 2
+    let share2Bytes = xorBytes(secretBytes, hashBytes);
+    document.getElementById('share2').value = bytesToHex(share2Bytes);
 }
 
 function reconstructSecret() {
