@@ -60,4 +60,9 @@ button:hover {
     color: red;
     font-weight: bold;
     margin-top: 10px;
+    display: block;
+}
+
+textarea {
+    resize: none;
 }
