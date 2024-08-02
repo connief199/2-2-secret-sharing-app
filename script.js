@@ -51,6 +51,12 @@ async function generateShares() {
         let hashBuffer = await crypto.subtle.digest('SHA-512', secretBytes.buffer);
         let hashBytes = new Uint8Array(hashBuffer).slice(0, 31);
 
+        // Check length of secretBytes and hashBytes
+        if (secretBytes.length !== hashBytes.length) {
+            showError("Secret and Share 1 (hash) must be the same length.", "generate-error-message");
+            return;
+        }
+
         // Generate Share 1 and Share 2
         let share1 = bytesToHex(hashBytes);
         let share2Bytes = xorBytes(secretBytes, hashBytes);
@@ -84,6 +90,12 @@ function reconstructSecret() {
     let share2Bytes = hexToBytes(share2Hex);
 
     if (share1Bytes === null || share2Bytes === null) return;
+
+    // Check length of share1Bytes and share2Bytes
+    if (share1Bytes.length !== share2Bytes.length) {
+        showError("Share 1 and Share 2 must be of the same length.", "reconstruct-error-message");
+        return;
+    }
 
     // Reconstruct the secret
     let secretBytes = xorBytes(share1Bytes, share2Bytes);
