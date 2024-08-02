@@ -12,20 +12,21 @@
         <h1>XOR Share Generator</h1>
 
         <div class="section">
-            <h2>Generate 2 Shares from a Secret Number</h2>
-            <p>Enter a secret number as a continuous string of 62 integers (each between 0 and 5):</p>
+            <h2>Generate Shares</h2>
+            <p>Enter the secret as a continuous string of 62 integers (each between 0 and 5):</p>
             <input type="text" id="secret" placeholder="e.g., 01234501234501234501234501234501234501234501234501234501234501" maxlength="62">
             <button onclick="generateShares()">Generate Shares</button>
+            <div id="generate-error-message" class="error-message"></div>
         </div>
 
         <div class="section">
             <h2>Share 1</h2>
-            <textarea id="share1" rows="4" readonly></textarea>
+            <textarea id="share1" rows="2" readonly></textarea>
         </div>
 
         <div class="section">
             <h2>Share 2</h2>
-            <textarea id="share2" rows="4" readonly></textarea>
+            <textarea id="share2" rows="2" readonly></textarea>
         </div>
 
         <div class="section">
@@ -34,14 +35,13 @@
             <input type="text" id="share1Input" placeholder="Enter Share 1" maxlength="62">
             <input type="text" id="share2Input" placeholder="Enter Share 2" maxlength="62">
             <button onclick="reconstructSecret()">Reconstruct Secret</button>
+            <div id="reconstruct-error-message" class="error-message"></div>
         </div>
 
         <div class="section">
             <h2>Reconstructed Secret</h2>
-            <textarea id="result" rows="4" readonly></textarea>
+            <textarea id="result" rows="2" readonly></textarea>
         </div>
-
-        <div id="error-message" class="error-message"></div>
     </div>
 </body>
 </html>
