@@ -30,9 +30,17 @@ function generateShares() {
         return;
     }
 
-    // Map secret characters to byte values
-    let secretBytes = new Uint8Array(secret.split('').map(Number));
+    // Create a 32-byte array from the 62-digit secret
+    let secretBytes = new Uint8Array(32);
     
+    // Fill the first 31 bytes with two digits each converted to a number
+    for (let i = 0; i < 31; i++) {
+        secretBytes[i] = parseInt(secret.substr(i * 2, 2), 10);
+    }
+    
+    // Handle the last byte separately (with the final two digits)
+    secretBytes[31] = parseInt(secret.substr(60, 2), 10);
+
     // Create Share 1 using SHA-512 and truncate to 32 bytes
     crypto.subtle.digest('SHA-512', secretBytes).then(digest => {
         let hashBytes = new Uint8Array(digest).slice(0, 32);
@@ -62,9 +70,8 @@ function reconstructSecret() {
     // Convert bytes back to the original secret format
     let secret = '';
     for (let i = 0; i < secretBytes.length; i++) {
-        secret += (secretBytes[i] % 6).toString(); // Ensure byte values map to digits 0-5
+        secret += secretBytes[i].toString().padStart(2, '0'); // Convert byte back to digit
     }
 
     document.getElementById('result').value = secret;
 }
-
