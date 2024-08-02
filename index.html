@@ -3,47 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secret Sharing</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        input, button { margin-top: 10px; width: 100%; }
-        textarea { width: 100%; }
-    </style>
+    <title>XOR Share Generator</title>
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Secret Sharing</h1>
-    
-    <label for="secret">Enter Secret (62 digits, each between 0 and 5):</label>
-    <input type="text" id="secret" placeholder="e.g., 012345012345...">
-    <button onclick="generateShares()">Generate Shares</button>
-
-    <div>
-        <label for="share1">Share 1 (Hexadecimal):</label>
-        <input type="text" id="share1" readonly>
-    </div>
-
-    <div>
-        <label for="share2">Share 2 (Hexadecimal):</label>
-        <input type="text" id="share2" readonly>
-    </div>
-
-    <hr>
-
-    <h2>Reconstruct Secret</h2>
-
-    <label for="share1Input">Enter Share 1 (Hexadecimal):</label>
-    <input type="text" id="share1Input">
-    
-    <label for="share2Input">Enter Share 2 (Hexadecimal):</label>
-    <input type="text" id="share2Input">
-
-    <button onclick="reconstructSecret()">Reconstruct Secret</button>
+    <h1>XOR Share Generator</h1>
     
     <div>
-        <label for="result">Reconstructed Secret:</label>
-        <input type="text" id="result" readonly>
+        <h2>Generate Shares</h2>
+        <label for="secret">Enter Secret (as 31 bytes in hex):</label>
+        <input type="text" id="secret" placeholder="e.g., 000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f">
+        <button onclick="generateShares()">Generate Shares</button>
     </div>
-
-    <script src="script.js"></script>
+    
+    <div>
+        <h2>Share 1</h2>
+        <textarea id="share1" rows="2" cols="64" readonly></textarea>
+    </div>
+    
+    <div>
+        <h2>Share 2</h2>
+        <textarea id="share2" rows="2" cols="64" readonly></textarea>
+    </div>
+    
+    <div>
+        <h2>Reconstruct Secret</h2>
+        <label for="share1Input">Share 1 (hex):</label>
+        <input type="text" id="share1Input" placeholder="e.g., ...">
+        <label for="share2Input">Share 2 (hex):</label>
+        <input type="text" id="share2Input" placeholder="e.g., ...">
+        <button onclick="reconstructSecret()">Reconstruct Secret</button>
+    </div>
+    
+    <div>
+        <h2>Reconstructed Secret</h2>
+        <textarea id="result" rows="2" cols="64" readonly></textarea>
+    </div>
 </body>
 </html>
