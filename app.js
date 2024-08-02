@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Generate Shares event
     generateButton.addEventListener('click', () => {
         const secret = secretInput.value.trim();
-        
+
         // Validate the input to ensure it is exactly 62 digits between 0-5
         if (!/^[0-5]{62}$/.test(secret)) {
             alert('Please enter a valid SECRET: a string of 62 digits (0-5).');
             return;
         }
 
-        // Convert the secret into a hex string (each digit is encoded as a single hex character)
+        // Convert the secret into a hex string
         const secretHex = secret.split('').map(digit => parseInt(digit, 10).toString(16)).join('');
 
         // Debugging: Log the converted secretHex
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Calculate SHA512 of the secret
         const sha512Hash = CryptoJS.SHA512(secretHex);
-        
+
         // Debugging: Log the full SHA512 hash
         console.log(`SHA512 Hash: ${sha512Hash.toString(CryptoJS.enc.Hex)}`);
 
@@ -54,8 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Debugging: Log the truncated share1
         console.log(`Share 1 (Truncated): ${share1}`);
 
-        // XOR the secretHex with share1 to get share2
-        const share2 = xorHexStrings(secretHex.padStart(64, '0'), share1);
+        // Pad secretHex to ensure it is 256 bits (64 hex characters) long
+        const paddedSecretHex = secretHex.padStart(64, '0');
+
+        // XOR the padded secretHex with share1 to get share2
+        const share2 = xorHexStrings(paddedSecretHex, share1);
 
         // Debugging: Log share2
         console.log(`Share 2: ${share2}`);
