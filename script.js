@@ -13,9 +13,14 @@ function generateShares() {
         return;
     }
 
+    console.log(`Original Secret: ${secretStr}`); // Debugging line
+
     const secret = secretStr.split('').map(Number); // Convert to array of integers
     const share1 = generateShare1(secretStr);
     const share2 = xorArrays(secret, share1);
+
+    console.log(`Generated Share 1: ${share1.join('')}`); // Debugging line
+    console.log(`Generated Share 2: ${share2.join('')}`); // Debugging line
 
     displayGeneratedResults(share1, share2);
 }
@@ -29,13 +34,18 @@ function rebuildSecret() {
 
     // Validate the shares
     if (!isValidShare(share1Str) || !isValidShare(share2Str)) {
-        alert('Please enter valid shares (256 bits).');
+        alert('Please enter valid shares (62 integers from 0 to 5).');
         return;
     }
+
+    console.log(`Input Share 1: ${share1Str}`); // Debugging line
+    console.log(`Input Share 2: ${share2Str}`); // Debugging line
 
     const share1 = share1Str.split('').map(Number);
     const share2 = share2Str.split('').map(Number);
     const reconstructedSecret = xorArrays(share1, share2);
+
+    console.log(`Reconstructed Secret: ${reconstructedSecret.join('')}`); // Debugging line
 
     displayReconstructedResult(reconstructedSecret);
 }
