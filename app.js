@@ -36,13 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Convert the secret into a byte array
+        // Convert the secret into a hex string, padded to ensure 256 bits
         const secretBytes = secret.split('').map(digit => parseInt(digit, 10));
 
-        // Debugging: Log the converted secretBytes
-        console.log(`Secret Bytes: ${secretBytes}`);
-
-        // Convert byte array to a word array (required by CryptoJS)
+        // Convert secretBytes to a string of bytes (WordArray)
         const secretWordArray = CryptoJS.lib.WordArray.create(secretBytes);
 
         // Calculate SHA512 of the secret
@@ -57,22 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Debugging: Log the truncated share1
         console.log(`Share 1 (Truncated): ${share1}`);
 
-        // Convert the truncated hash back to a byte array
-        const share1Bytes = CryptoJS.enc.Hex.parse(share1).words.flatMap(word => [
-            (word >> 24) & 0xFF,
-            (word >> 16) & 0xFF,
-            (word >> 8) & 0xFF,
-            word & 0xFF,
-        ]);
+        // Ensure the secret is padded or truncated to 256 bits (64 hex characters) for XOR operation
+        const secretHex = secretBytes.map(byte => byte.toString(16)).join('').padEnd(64, '0').slice(0, 64);
 
-        // Ensure the secret byte array is the same length as the truncated hash byte array
-        const paddedSecretBytes = Array.from({length: share1Bytes.length}, (_, i) => secretBytes[i % secretBytes.length]);
-
-        // XOR the padded secret bytes with share1 bytes to get share2
-        const share2Bytes = paddedSecretBytes.map((byte, index) => byte ^ share1Bytes[index]);
-
-        // Convert share2Bytes back to a hex string
-        const share2 = share2Bytes.map(byte => byte.toString(16).padStart(2, '0')).join('');
+        // XOR the secretHex with share1 to get share2
+        const share2 = xorHexStrings(secretHex, share1);
 
         // Debugging: Log share2
         console.log(`Share 2: ${share2}`);
@@ -93,26 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Convert the hex strings back to byte arrays
-        const share1Bytes = CryptoJS.enc.Hex.parse(share1).words.flatMap(word => [
-            (word >> 24) & 0xFF,
-            (word >> 16) & 0xFF,
-            (word >> 8) & 0xFF,
-            word & 0xFF,
-        ]);
+        // XOR the two shares to reconstruct the original secret
+        const secretHex = xorHexStrings(share1, share2);
 
-        const share2Bytes = CryptoJS.enc.Hex.parse(share2).words.flatMap(word => [
-            (word >> 24) & 0xFF,
-            (word >> 16) & 0xFF,
-            (word >> 8) & 0xFF,
-            word & 0xFF,
-        ]);
-
-        // XOR the two byte arrays to reconstruct the original secret bytes
-        const secretBytes = share1Bytes.map((byte, index) => byte ^ share2Bytes[index]);
-
-        // Convert the byte array back to the original secret (digits 0-5)
-        const secret = secretBytes.map(byte => byte.toString()).join('');
+        // Convert the hex string back to the original secret (digits 0-5)
+        const secret = secretHex.match(/.{2}/g).map(byte => parseInt(byte, 16)).join('').slice(0, 62);
 
         // Debugging: Log the reconstructed secret
         console.log(`Reconstructed Secret: ${secret}`);
