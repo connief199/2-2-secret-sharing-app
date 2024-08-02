@@ -43,16 +43,23 @@ async function generateShares() {
     }
 
     let secretBytes = new Uint8Array(secretString.split('').map(Number));
-    let hashBytes = await crypto.subtle.digest('SHA-512', secretBytes);
-    hashBytes = new Uint8Array(hashBytes).slice(0, 31);
+    
+    try {
+        let hashBuffer = await crypto.subtle.digest('SHA-512', secretBytes);
+        let hashBytes = new Uint8Array(hashBuffer).slice(0, 31);
 
-    let share1 = bytesToHex(hashBytes);
-    let share2Bytes = xorBytes(secretBytes, hashBytes);
-    if (share2Bytes === null) return;
-    let share2 = bytesToHex(share2Bytes);
+        let share1 = bytesToHex(hashBytes);
+        let share2Bytes = xorBytes(secretBytes, hashBytes);
+        
+        if (share2Bytes === null) return;
 
-    document.getElementById('share1').value = share1;
-    document.getElementById('share2').value = share2;
+        let share2 = bytesToHex(share2Bytes);
+
+        document.getElementById('share1').value = share1;
+        document.getElementById('share2').value = share2;
+    } catch (error) {
+        showError("Error generating shares: " + error.message);
+    }
 }
 
 // Reconstruct the secret from Share 1 and Share 2
@@ -67,7 +74,11 @@ function reconstructSecret() {
 
     let share1Bytes = hexToBytes(share1Hex);
     let share2Bytes = hexToBytes(share2Hex);
+
+    if (share1Bytes === null || share2Bytes === null) return;
+
     let secretBytes = xorBytes(share1Bytes, share2Bytes);
+
     if (secretBytes === null) return;
 
     let secret = bytesToHex(secretBytes);
