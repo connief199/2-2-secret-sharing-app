@@ -1,7 +1,7 @@
 // Function to XOR two byte arrays
 function xorBytes(a, b) {
     if (a.length !== b.length) {
-        showError("Byte arrays must be of the same length for XOR operation.");
+        showError("Byte arrays must be of the same length for XOR operation.", "generate-error-message");
         return null;
     }
     let result = new Uint8Array(a.length);
@@ -14,7 +14,7 @@ function xorBytes(a, b) {
 // Convert a hexadecimal string to a byte array
 function hexToBytes(hex) {
     if (hex.length % 2 !== 0) {
-        showError("Hexadecimal string must have an even length.");
+        showError("Hexadecimal string must have an even length.", "reconstruct-error-message");
         return null;
     }
     let bytes = [];
@@ -39,7 +39,7 @@ async function generateShares() {
 
     // Validate the secret input
     if (!/^[0-5]{62}$/.test(secretString)) {
-        showError("The secret must be a continuous string of 62 integers, each between 0 and 5.");
+        showError("The secret must be a continuous string of 62 integers, each between 0 and 5.", "generate-error-message");
         return;
     }
 
@@ -62,9 +62,9 @@ async function generateShares() {
         // Display the shares
         document.getElementById('share1').value = share1;
         document.getElementById('share2').value = share2;
-        document.getElementById('error-message').textContent = ''; // Clear any previous error
+        document.getElementById('generate-error-message').textContent = ''; // Clear any previous error
     } catch (error) {
-        showError("Error generating shares: " + error.message);
+        showError("Error generating shares: " + error.message, "generate-error-message");
     }
 }
 
@@ -75,7 +75,7 @@ function reconstructSecret() {
 
     // Validate the shares
     if (share1Hex.length !== 62 || share2Hex.length !== 62) {
-        showError("Both shares must be 31 bytes long in hexadecimal format.");
+        showError("Both shares must be 31 bytes long in hexadecimal format.", "reconstruct-error-message");
         return;
     }
 
@@ -92,10 +92,10 @@ function reconstructSecret() {
 
     let secret = bytesToHex(secretBytes);
     document.getElementById('result').value = secret;
-    document.getElementById('error-message').textContent = ''; // Clear any previous error
+    document.getElementById('reconstruct-error-message').textContent = ''; // Clear any previous error
 }
 
 // Show error message
-function showError(message) {
-    document.getElementById('error-message').textContent = message;
+function showError(message, elementId) {
+    document.getElementById(elementId).textContent = message;
 }
