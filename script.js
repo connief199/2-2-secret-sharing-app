@@ -1,3 +1,4 @@
+// Function to XOR two byte arrays
 function xorBytes(a, b) {
     if (a.length !== b.length) {
         throw new Error("Byte arrays must be of the same length for XOR operation.");
@@ -9,6 +10,7 @@ function xorBytes(a, b) {
     return result;
 }
 
+// Convert a hexadecimal string to a byte array
 function hexToBytes(hex) {
     if (hex.length % 2 !== 0) {
         throw new Error("Hexadecimal string must have an even length.");
@@ -20,6 +22,7 @@ function hexToBytes(hex) {
     return new Uint8Array(bytes);
 }
 
+// Convert a byte array to a hexadecimal string
 function bytesToHex(bytes) {
     let hex = '';
     for (let i = 0; i < bytes.length; i++) {
@@ -28,6 +31,7 @@ function bytesToHex(bytes) {
     return hex;
 }
 
+// Generate Share 1 and Share 2
 async function generateShares() {
     let secret = document.getElementById('secret').value;
 
@@ -53,6 +57,7 @@ async function generateShares() {
     document.getElementById('share2').value = bytesToHex(share2Bytes);
 }
 
+// Reconstruct the secret from Share 1 and Share 2
 function reconstructSecret() {
     let share1Hex = document.getElementById('share1Input').value;
     let share2Hex = document.getElementById('share2Input').value;
