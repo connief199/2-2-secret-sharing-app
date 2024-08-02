@@ -35,14 +35,14 @@ function bytesToHex(bytes) {
 
 // Generate Share 1 and Share 2
 async function generateShares() {
-    let secretHex = document.getElementById('secret').value.trim();
+    let secretString = document.getElementById('secret').value.trim();
 
-    if (!/^[0-9a-fA-F]{62}$/.test(secretHex)) {
-        showError("The secret must be exactly 31 bytes long in hexadecimal format.");
+    if (!/^[0-5]{62}$/.test(secretString)) {
+        showError("The secret must be a continuous string of 62 integers, each between 0 and 5.");
         return;
     }
 
-    let secretBytes = hexToBytes(secretHex);
+    let secretBytes = new Uint8Array(secretString.split('').map(Number));
     let hashBytes = await crypto.subtle.digest('SHA-512', secretBytes);
     hashBytes = new Uint8Array(hashBytes).slice(0, 31);
 
