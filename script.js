@@ -45,10 +45,10 @@ async function generateShares() {
 
     // Convert the secret to a byte array
     let secretBytes = new Uint8Array(secretString.split('').map(Number));
-    
+
     try {
         // Compute SHA-512 hash and truncate to 31 bytes
-        let hashBuffer = await crypto.subtle.digest('SHA-512', secretBytes);
+        let hashBuffer = await crypto.subtle.digest('SHA-512', secretBytes.buffer);
         let hashBytes = new Uint8Array(hashBuffer).slice(0, 31);
 
         // Generate Share 1 and Share 2
@@ -74,7 +74,7 @@ function reconstructSecret() {
     let share2Hex = document.getElementById('share2Input').value.trim();
 
     // Validate the shares
-    if (share1Hex.length !== 62 || share2Hex.length !== 62) {
+    if (!/^[0-9a-fA-F]{62}$/.test(share1Hex) || !/^[0-9a-fA-F]{62}$/.test(share2Hex)) {
         showError("Both shares must be 31 bytes long in hexadecimal format.", "reconstruct-error-message");
         return;
     }
@@ -97,5 +97,7 @@ function reconstructSecret() {
 
 // Show error message
 function showError(message, elementId) {
-    document.getElementById(elementId).textContent = message;
+    let errorElement = document.getElementById(elementId);
+    errorElement.textContent = message;
+    errorElement.style.display = 'block'; // Make sure the error message is visible
 }
