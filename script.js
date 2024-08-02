@@ -30,20 +30,17 @@ function generateShares() {
         return;
     }
 
-    // Create a 32-byte array from the 62-digit secret
-    let secretBytes = new Uint8Array(32);
-    
-    // Fill the first 31 bytes with two digits each converted to a number
+    // Create a 31-byte array from the 62-digit secret
+    let secretBytes = new Uint8Array(31);
+
+    // Fill the byte array with the secret digits
     for (let i = 0; i < 31; i++) {
         secretBytes[i] = parseInt(secret.substr(i * 2, 2), 10);
     }
-    
-    // Handle the last byte separately (with the final two digits)
-    secretBytes[31] = parseInt(secret.substr(60, 2), 10);
 
-    // Create Share 1 using SHA-512 and truncate to 32 bytes
+    // Use SHA-512 and truncate to 31 bytes for share1
     crypto.subtle.digest('SHA-512', secretBytes).then(digest => {
-        let hashBytes = new Uint8Array(digest).slice(0, 32);
+        let hashBytes = new Uint8Array(digest).slice(0, 31);
         document.getElementById('share1').value = bytesToHex(hashBytes);
 
         // XOR the secret with share 1 to create share 2
@@ -57,8 +54,8 @@ function reconstructSecret() {
     let share2Hex = document.getElementById('share2Input').value;
 
     // Ensure both shares are provided and have correct length
-    if (share1Hex.length !== 64 || share2Hex.length !== 64) {
-        alert("Both shares must be 64 hexadecimal characters long.");
+    if (share1Hex.length !== 62 || share2Hex.length !== 62) {
+        alert("Both shares must be 62 hexadecimal characters long.");
         return;
     }
 
