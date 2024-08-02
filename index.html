@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Sharing</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button { margin-top: 10px; }
+        textarea { width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Secret Sharing</h1>
+    
+    <label for="secret">Enter Secret (62 digits, each between 0 and 5):</label>
+    <input type="text" id="secret" placeholder="e.g., 012345012345...">
+    <button onclick="generateShares()">Generate Shares</button>
+
+    <div>
+        <label for="share1">Share 1 (Hexadecimal):</label>
+        <input type="text" id="share1" readonly>
+    </div>
+
+    <div>
+        <label for="share2">Share 2 (Hexadecimal):</label>
+        <input type="text" id="share2" readonly>
+    </div>
+
+    <hr>
+
+    <h2>Reconstruct Secret</h2>
+
+    <label for="share1Input">Enter Share 1 (Hexadecimal):</label>
+    <input type="text" id="share1Input">
+    
+    <label for="share2Input">Enter Share 2 (Hexadecimal):</label>
+    <input type="text" id="share2Input">
+
+    <button onclick="reconstructSecret()">Reconstruct Secret</button>
+    
+    <div>
+        <label for="result">Reconstructed Secret:</label>
+        <input type="text" id="result" readonly>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
