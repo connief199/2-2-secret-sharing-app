@@ -3,45 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XOR Share Generator</title>
+    <title>XOR Secret Sharing</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>XOR Share Generator</h1>
+        <h1>XOR Secret Sharing</h1>
+        <form id="secret-form">
+            <label for="secret">Enter a secret (62 integers, each from 0 to 5):</label>
+            <input type="text" id="secret" placeholder="e.g., 012345123450..." required>
+            <button type="button" id="generate-shares">Generate Shares</button>
+        </form>
 
-        <div class="section">
-            <h2>Generate Shares</h2>
-            <p>Enter the secret as a continuous string of 62 integers (each between 0 and 5):</p>
-            <input type="text" id="secret" placeholder="e.g., 01234501234501234501234501234501234501234501234501234501234501" maxlength="62">
-            <button onclick="generateShares()">Generate Shares</button>
-            <div id="generate-error-message" class="error-message"></div>
-        </div>
-
-        <div class="section">
-            <h2>Share 1</h2>
-            <textarea id="share1" rows="2" readonly></textarea>
-        </div>
-
-        <div class="section">
-            <h2>Share 2</h2>
-            <textarea id="share2" rows="2" readonly></textarea>
-        </div>
-
-        <div class="section">
-            <h2>Reconstruct Secret</h2>
-            <p>Enter Share 1 and Share 2 (as hexadecimal strings):</p>
-            <input type="text" id="share1Input" placeholder="Enter Share 1" maxlength="62">
-            <input type="text" id="share2Input" placeholder="Enter Share 2" maxlength="62">
-            <button onclick="reconstructSecret()">Reconstruct Secret</button>
-            <div id="reconstruct-error-message" class="error-message"></div>
-        </div>
-
-        <div class="section">
-            <h2>Reconstructed Secret</h2>
-            <textarea id="result" rows="2" readonly></textarea>
+        <div id="result" class="result">
+            <h2>Results</h2>
+            <p id="original-secret">Original Secret: </p>
+            <p id="share1">Share 1: </p>
+            <p id="share2">Share 2: </p>
+            <p id="reconstructed-secret">Reconstructed Secret: </p>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/3.2.0/sha.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
