@@ -13,26 +13,26 @@
 
         <div class="section">
             <h2>Generate Shares</h2>
-            <p>Enter the secret (as 31 bytes in hex):</p>
-            <input type="text" id="secret" placeholder="e.g., 000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f">
+            <p>Enter the secret as a continuous string of 62 integers (each between 0 and 5):</p>
+            <input type="text" id="secret" placeholder="e.g., 01234501234501234501234501234501234501234501234501234501234501" maxlength="62">
             <button onclick="generateShares()">Generate Shares</button>
         </div>
 
         <div class="section">
             <h2>Share 1</h2>
-            <textarea id="share1" rows="2" cols="64" readonly></textarea>
+            <textarea id="share1" rows="2" readonly></textarea>
             <button onclick="copyToClipboard('share1')">Copy to Clipboard</button>
         </div>
 
         <div class="section">
             <h2>Share 2</h2>
-            <textarea id="share2" rows="2" cols="64" readonly></textarea>
+            <textarea id="share2" rows="2" readonly></textarea>
             <button onclick="copyToClipboard('share2')">Copy to Clipboard</button>
         </div>
 
         <div class="section">
             <h2>Reconstruct Secret</h2>
-            <p>Enter Share 1 and Share 2 (as hex):</p>
+            <p>Enter Share 1 and Share 2 (as hexadecimal strings):</p>
             <input type="text" id="share1Input" placeholder="e.g., ...">
             <input type="text" id="share2Input" placeholder="e.g., ...">
             <button onclick="reconstructSecret()">Reconstruct Secret</button>
@@ -40,7 +40,7 @@
 
         <div class="section">
             <h2>Reconstructed Secret</h2>
-            <textarea id="result" rows="2" cols="64" readonly></textarea>
+            <textarea id="result" rows="2" readonly></textarea>
             <button onclick="copyToClipboard('result')">Copy to Clipboard</button>
         </div>
 
