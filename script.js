@@ -78,13 +78,3 @@ function reconstructSecret() {
 function showError(message) {
     document.getElementById('error-message').textContent = message;
 }
-
-// Copy text to clipboard
-function copyToClipboard(elementId) {
-    let text = document.getElementById(elementId).value;
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Copied to clipboard!");
-    }).catch(err => {
-        showError("Failed to copy text: " + err);
-    });
-}
