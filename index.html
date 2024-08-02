@@ -3,43 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XOR Secret Sharing</title>
+    <title>Secret Share Generator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>XOR Secret Sharing</h1>
+        <h1>Secret Share Generator</h1>
 
-        <!-- Section to generate shares from a secret -->
-        <div class="section">
-            <h2>Generate Shares from a Secret</h2>
-            <label for="secret">Enter a secret (62 integers, each from 0 to 5):</label>
-            <input type="text" id="secret" placeholder="e.g., 012345123450..." required>
-            <button id="generate-shares">Generate Shares</button>
-
-            <div id="shares-result" class="result">
-                <p id="share1">Share 1: </p>
-                <p id="share2">Share 2: </p>
+        <!-- Section for generating shares -->
+        <section id="generate-shares">
+            <h2>Generate Shares from Secret</h2>
+            <input type="text" id="secret-input" placeholder="Enter 62 digits (0-5)" maxlength="62">
+            <button id="generate-button">Generate Shares</button>
+            <div id="generate-results">
+                <p><strong>SHARE 1:</strong> <span id="share1"></span></p>
+                <p><strong>SHARE 2:</strong> <span id="share2"></span></p>
             </div>
-        </div>
+        </section>
 
-        <!-- Section to rebuild a secret from shares -->
-        <div class="section">
-            <h2>Rebuild a Secret from its Shares</h2>
-            <label for="share1-input">Enter Share 1:</label>
-            <input type="text" id="share1-input" placeholder="e.g., 524301234523..." required>
-            
-            <label for="share2-input">Enter Share 2:</label>
-            <input type="text" id="share2-input" placeholder="e.g., 102345301234..." required>
-            
-            <button id="rebuild-secret">Rebuild Secret</button>
-
-            <div id="reconstruction-result" class="result">
-                <p id="reconstructed-secret">Reconstructed Secret: </p>
-            </div>
-        </div>
+        <!-- Section for rebuilding secret -->
+        <section id="rebuild-secret">
+            <h2>Rebuild Secret from Shares</h2>
+            <input type="text" id="share1-input" placeholder="Enter SHARE 1 (256 bits)" maxlength="64">
+            <input type="text" id="share2-input" placeholder="Enter SHARE 2 (256 bits)" maxlength="64">
+            <button id="rebuild-button">Rebuild Secret</button>
+            <p><strong>Rebuilt SECRET:</strong> <span id="rebuilt-secret"></span></p>
+        </section>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/3.2.0/sha.js"></script>
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
