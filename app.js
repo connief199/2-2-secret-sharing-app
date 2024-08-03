@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const bits = byte.toString(2).padStart(8, '0');
             binaryArray.push(...bits.split('').map(b => parseInt(b, 10)));
         }
-        return binaryArray.slice(0, 128); // Ensure it's exactly 128 bits
+        return binaryArray;
     }
 
     // Function to convert binary array to hex string
@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Convert the secret to a binary array
         const secretBinary = base6ToBinary(secret);
 
-        // Calculate SHA512 of the secret and truncate it to 128 bits to get SHARE 1
+        // Calculate SHA512 of the secret and truncate it to 186 bits to get SHARE 1
         const sha512Hash = CryptoJS.SHA512(CryptoJS.enc.Hex.parse(secretBinary.join('')));
-        const share1Binary = hexToBinaryArray(sha512Hash.toString(CryptoJS.enc.Hex));
+        const share1Binary = hexToBinaryArray(sha512Hash.toString(CryptoJS.enc.Hex)).slice(0, 186);
 
         // Convert SHARE 1 to a hex string
         const share1Hex = binaryArrayToHex(share1Binary);
@@ -80,12 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // XOR the secret binary with SHARE 1 binary to get SHARE 2
         const share2Binary = xorArrays(secretBinary, share1Binary);
 
-        // Convert SHARE 2 back to a base-6 string
-        const share2Base6 = binaryToBase6(share2Binary);
+        // Convert SHARE 2 to a hex string
+        const share2Hex = binaryArrayToHex(share2Binary);
 
         // Display the shares
         share1Output.textContent = share1Hex;
-        share2Output.textContent = share2Base6;
+        share2Output.textContent = share2Hex;
     });
 
     // Rebuild Secret event
@@ -94,21 +94,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const share2 = share2Input.value.trim();
 
         // Validate the inputs
-        if (share1.length !== 32 || !/^[a-fA-F0-9]{32}$/.test(share1)) {
-            alert('Please enter a valid SHARE 1: 128 bits long (32 hex characters).');
+        if (!/^[a-fA-F0-9]{48}$/.test(share1)) {
+            alert('Please enter a valid SHARE 1: 186 bits long (48 hex characters).');
             return;
         }
 
-        if (!/^[0-5]{62}$/.test(share2)) {
-            alert('Please enter a valid SHARE 2: a string of 62 digits (0-5).');
+        if (!/^[a-fA-F0-9]{48}$/.test(share2)) {
+            alert('Please enter a valid SHARE 2: 186 bits long (48 hex characters).');
             return;
         }
 
         // Convert SHARE 1 from hex to binary array
-        const share1Binary = hexToBinaryArray(share1);
+        const share1Binary = hexToBinaryArray(share1).slice(0, 186);
 
-        // Convert SHARE 2 from base-6 to binary array
-        const share2Binary = base6ToBinary(share2);
+        // Convert SHARE 2 from hex to binary array
+        const share2Binary = hexToBinaryArray(share2).slice(0, 186);
 
         // XOR SHARE 1 binary with SHARE 2 binary to reconstruct the secret
         const secretBinary = xorArrays(share1Binary, share2Binary);
