@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return hash.toString(CryptoJS.enc.Hex).slice(0, 64);
     }
 
-    // Function to XOR two byte arrays
-    function xorByteArrays(a, b) {
-        return a.map((byte, index) => byte ^ b[index]);
+    // Convert a string of digits (0-5) into a byte array
+    function digitsToByteArray(digits) {
+        return digits.split('').map(char => parseInt(char, 10));
     }
 
     // Convert a byte array to a hex string
@@ -33,6 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return bytes;
     }
 
+    // XOR two byte arrays
+    function xorByteArrays(a, b) {
+        return a.map((byte, index) => byte ^ b[index]);
+    }
+
     // Generate Shares event
     generateButton.addEventListener('click', () => {
         const secret = secretInput.value.trim();
@@ -43,41 +48,27 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Calculate SHA512 of the secret
-        const sha512Hash = CryptoJS.SHA512(secret);
+        // Convert the secret to a byte array (as integers between 0 and 5)
+        const secretBytes = digitsToByteArray(secret);
 
-        // Debug: Log the full SHA512 hash
-        console.log('Full SHA512 hash:', sha512Hash.toString(CryptoJS.enc.Hex));
-
-        // Truncate the SHA512 hash to 256 bits (64 hex characters) to get SHARE 1
+        // Calculate SHA512 of the secret and truncate it to 256 bits to get SHARE 1
+        const sha512Hash = CryptoJS.SHA512(CryptoJS.enc.Hex.parse(secret));
         const share1 = truncate256(sha512Hash);
-
-        // Debug: Log SHARE 1
-        console.log('Truncated SHA512 to SHARE 1:', share1);
 
         // Convert SHARE 1 to a byte array
         const share1Bytes = hexToBytes(share1);
 
-        // Ensure that the secret is converted to a byte array that matches the length of SHARE 1
-        const secretBytes = Array.from(secret).map(char => parseInt(char, 10));
-
-        // Pad or truncate the secretBytes array to ensure it is exactly 32 bytes long
+        // Ensure that the secretBytes are padded to the same length as share1Bytes
         const paddedSecretBytes = new Uint8Array(32);
         for (let i = 0; i < 32; i++) {
             paddedSecretBytes[i] = i < secretBytes.length ? secretBytes[i] : 0;
         }
 
-        // Debug: Log padded secret bytes
-        console.log('Padded Secret Bytes:', paddedSecretBytes);
-
-        // XOR the secret byte array with SHARE 1 byte array to get SHARE 2
+        // XOR the padded secret byte array with SHARE 1 byte array to get SHARE 2
         const share2Bytes = xorByteArrays(paddedSecretBytes, share1Bytes);
 
         // Convert share2Bytes back to a hex string
         const share2 = bytesToHex(share2Bytes);
-
-        // Debug: Log SHARE 2
-        console.log('SHARE 2:', share2);
 
         // Display the shares
         share1Output.textContent = share1;
@@ -103,10 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const secretBytes = xorByteArrays(share1Bytes, share2Bytes);
 
         // Convert the byte array back to the original secret (digits 0-5)
-        const secret = secretBytes.slice(0, 62).map(byte => (byte % 6).toString()).join('');
-
-        // Debug: Log the reconstructed secret
-        console.log('Reconstructed Secret:', secret);
+        const secret = secretBytes.map(byte => byte.toString()).join('').slice(0, 62);
 
         // Display the reconstructed secret
         rebuiltSecretOutput.textContent = secret;
