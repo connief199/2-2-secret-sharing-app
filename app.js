@@ -9,27 +9,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const rebuildButton = document.getElementById('rebuild-button');
     const rebuiltSecretOutput = document.getElementById('rebuilt-secret');
 
-    // Helper function to convert base-6 string to hex
-    function base6ToHex(base6String) {
+    // Helper function to convert base-6 string to binary string
+    function base6ToBinary(base6String) {
+        let binaryString = '';
+        for (let i = 0; i < base6String.length; i++) {
+            const num = parseInt(base6String[i], 6);
+            binaryString += num.toString(2).padStart(3, '0');
+        }
+        return binaryString;
+    }
+
+    // Helper function to convert binary string to hex
+    function binaryToHex(binaryString) {
         let hexString = '';
-        for (let i = 0; i < base6String.length; i += 4) {
-            const segment = base6String.slice(i, i + 4);
-            let binary = '';
-            for (const char of segment) {
-                binary += parseInt(char, 10).toString(2).padStart(3, '0');
-            }
-            while (binary.length < 16) binary = '0' + binary; // Ensure each segment is 16 bits
-            const hex = parseInt(binary, 2).toString(16).padStart(4, '0');
+        for (let i = 0; i < binaryString.length; i += 4) {
+            const segment = binaryString.slice(i, i + 4);
+            const hex = parseInt(segment, 2).toString(16);
             hexString += hex;
         }
         return hexString;
     }
 
-    // Helper function to XOR two hex strings
-    function xorHex(hex1, hex2) {
-        const bytes1 = CryptoJS.enc.Hex.parse(hex1);
-        const bytes2 = CryptoJS.enc.Hex.parse(hex2);
-        const result = CryptoJS.enc.Hex.stringify(CryptoJS.XOR(bytes1, bytes2));
+    // Helper function to convert hex to binary string
+    function hexToBinary(hexString) {
+        let binaryString = '';
+        for (let i = 0; i < hexString.length; i++) {
+            const hex = parseInt(hexString[i], 16);
+            binaryString += hex.toString(2).padStart(4, '0');
+        }
+        return binaryString;
+    }
+
+    // Helper function to XOR two binary strings
+    function xorBinary(binary1, binary2) {
+        const maxLength = Math.max(binary1.length, binary2.length);
+        let result = '';
+        for (let i = 0; i < maxLength; i++) {
+            const bit1 = binary1[i] || '0';
+            const bit2 = binary2[i] || '0';
+            result += (bit1 === bit2 ? '0' : '1');
+        }
         return result;
     }
 
@@ -43,15 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Convert the secret to hex
-        const secretHex = base6ToHex(secret);
+        // Convert the secret to binary
+        const secretBinary = base6ToBinary(secret);
 
-        // Calculate SHA512 of the secret and truncate to 128 bits (32 hex chars) for SHARE 1
-        const sha512Hash = CryptoJS.SHA512(CryptoJS.enc.Hex.parse(secretHex));
+        // Calculate SHA512 of the secret in binary and truncate to 128 bits (32 hex chars) for SHARE 1
+        const sha512Hash = CryptoJS.SHA512(CryptoJS.enc.Hex.parse(binaryToHex(secretBinary)));
         const share1Hex = sha512Hash.toString(CryptoJS.enc.Hex).slice(0, 32);
+        const share1Binary = hexToBinary(share1Hex);
 
-        // XOR the secret hex with SHARE 1 hex to get SHARE 2
-        const share2Hex = xorHex(secretHex, share1Hex);
+        // XOR the secret binary with SHARE 1 binary to get SHARE 2 in binary
+        const share2Binary = xorBinary(secretBinary, share1Binary);
+
+        // Convert SHARE 2 to hex
+        const share2Hex = binaryToHex(share2Binary);
 
         // Display the shares
         share1Output.textContent = share1Hex;
@@ -60,43 +83,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Rebuild Secret event
     rebuildButton.addEventListener('click', () => {
-        const share1 = share1Input.value.trim();
-        const share2 = share2Input.value.trim();
+        const share1Hex = share1Input.value.trim();
+        const share2Hex = share2Input.value.trim();
 
         // Validate the inputs
-        if (!/^[a-fA-F0-9]{32}$/.test(share1)) {
+        if (!/^[a-fA-F0-9]{32}$/.test(share1Hex)) {
             alert('Please enter a valid SHARE 1: 128 bits long (32 hex characters).');
             return;
         }
 
-        if (!/^[a-fA-F0-9]{32}$/.test(share2)) {
+        if (!/^[a-fA-F0-9]{32}$/.test(share2Hex)) {
             alert('Please enter a valid SHARE 2: 128 bits long (32 hex characters).');
             return;
         }
 
-        // XOR SHARE 1 hex with SHARE 2 hex to reconstruct the secret
-        const secretHex = xorHex(share1, share2);
+        // Convert hex shares to binary
+        const share1Binary = hexToBinary(share1Hex);
+        const share2Binary = hexToBinary(share2Hex);
 
-        // Convert the hex back to base-6
-        const secret = hexToBase6(secretHex);
+        // XOR SHARE 1 binary with SHARE 2 binary to reconstruct the secret in binary
+        const secretBinary = xorBinary(share1Binary, share2Binary);
+
+        // Convert the binary back to base-6
+        const secret = binaryToBase6(secretBinary);
 
         // Display the reconstructed secret
         rebuiltSecretOutput.textContent = secret;
     });
 
-    // Helper function to convert hex to base-6 string
-    function hexToBase6(hexString) {
-        let binaryString = '';
-        for (let i = 0; i < hexString.length; i += 2) {
-            const byte = parseInt(hexString.substr(i, 2), 16);
-            binaryString += byte.toString(2).padStart(8, '0');
-        }
-
+    // Helper function to convert binary to base-6 string
+    function binaryToBase6(binaryString) {
         let base6String = '';
         for (let i = 0; i < binaryString.length; i += 3) {
             const segment = binaryString.slice(i, i + 3);
             const num = parseInt(segment, 2);
-            base6String += num.toString(10);
+            base6String += num.toString(6);
         }
         return base6String;
     }
