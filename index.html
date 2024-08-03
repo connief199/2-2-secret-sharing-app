@@ -3,34 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secret Share Generator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Share Generation and Reconstruction</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Secret Share Generator</h1>
+    <h1>Share Generation and Reconstruction</h1>
 
-        <!-- Section for generating shares -->
-        <section id="generate-shares">
-            <h2>Generate Shares from Secret</h2>
-            <input type="text" id="secret-input" placeholder="Enter 62 digits (0-5)" maxlength="62">
-            <button id="generate-button">Generate Shares</button>
-            <div id="generate-results">
-                <p><strong>SHARE 1 (Hex):</strong> <span id="share1"></span></p>
-                <p><strong>SHARE 2 (Hex):</strong> <span id="share2"></span></p>
-            </div>
-        </section>
+    <h2>Generate Shares</h2>
+    <label for="secret-input">Enter SECRET:</label>
+    <input type="text" id="secret-input" placeholder="62 digits between 0-5">
+    <button id="generate-button">Generate Shares</button>
+    <p>Share 1: <span id="share1"></span></p>
+    <p>Share 2: <span id="share2"></span></p>
 
-        <!-- Section for rebuilding secret -->
-        <section id="rebuild-secret">
-            <h2>Rebuild Secret from Shares</h2>
-            <input type="text" id="share1-input" placeholder="Enter SHARE 1 (Hex)" maxlength="48">
-            <input type="text" id="share2-input" placeholder="Enter SHARE 2 (Hex)" maxlength="48">
-            <button id="rebuild-button">Rebuild Secret</button>
-            <p><strong>Rebuilt SECRET:</strong> <span id="rebuilt-secret"></span></p>
-        </section>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="app.js"></script>
+    <h2>Rebuild Secret</h2>
+    <label for="share1-input">Enter SHARE 1 (hex):</label>
+    <input type="text" id="share1-input" placeholder="Hexadecimal value">
+    <br>
+    <label for="share2-input">Enter SHARE 2 (hex):</label>
+    <input type="text" id="share2-input" placeholder="Hexadecimal value">
+    <br>
+    <button id="rebuild-button">Rebuild Secret</button>
+    <p>Rebuilt SECRET: <span id="rebuilt-secret"></span></p>
 </body>
 </html>
