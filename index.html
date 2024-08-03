@@ -4,27 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Share Generation and Reconstruction</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="app.js" defer></script>
 </head>
 <body>
     <h1>Share Generation and Reconstruction</h1>
 
-    <h2>Generate Shares</h2>
-    <label for="secret-input">Enter SECRET:</label>
-    <input type="text" id="secret-input" placeholder="62 digits between 0-5">
-    <button id="generate-button">Generate Shares</button>
-    <p>Share 1: <span id="share1"></span></p>
-    <p>Share 2: <span id="share2"></span></p>
+    <div class="container">
+        <h2>Generate Shares</h2>
+        <label for="secret-input">Enter SECRET:</label>
+        <input type="text" id="secret-input" placeholder="62 digits between 0-5">
+        <button id="generate-button">Generate Shares</button>
+        <p>Share 1: <span id="share1"></span></p>
+        <p>Share 2: <span id="share2"></span></p>
+    </div>
 
-    <h2>Rebuild Secret</h2>
-    <label for="share1-input">Enter SHARE 1 (hex):</label>
-    <input type="text" id="share1-input" placeholder="Hexadecimal value">
-    <br>
-    <label for="share2-input">Enter SHARE 2 (hex):</label>
-    <input type="text" id="share2-input" placeholder="Hexadecimal value">
-    <br>
-    <button id="rebuild-button">Rebuild Secret</button>
-    <p>Rebuilt SECRET: <span id="rebuilt-secret"></span></p>
+    <div class="container">
+        <h2>Rebuild Secret</h2>
+        <label for="share1-input">Enter SHARE 1 (hex):</label>
+        <input type="text" id="share1-input" placeholder="Hexadecimal value">
+        <br>
+        <label for="share2-input">Enter SHARE 2 (hex):</label>
+        <input type="text" id="share2-input" placeholder="Hexadecimal value">
+        <br>
+        <button id="rebuild-button">Rebuild Secret</button>
+        <p>Rebuilt SECRET: <span id="rebuilt-secret"></span></p>
+    </div>
 </body>
 </html>
