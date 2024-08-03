@@ -69,16 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Convert the secret to a binary array
         const secretBinary = base6ToBinary(secret);
+        console.log('Secret Binary:', secretBinary.join(''));
 
         // Calculate SHA512 of the secret and truncate it to 186 bits to get SHARE 1
         const sha512Hash = CryptoJS.SHA512(CryptoJS.enc.Hex.parse(secretBinary.join('')));
         const share1Binary = hexToBinaryArray(sha512Hash.toString(CryptoJS.enc.Hex)).slice(0, 186);
+        console.log('Share 1 Binary:', share1Binary.join(''));
 
         // Convert SHARE 1 to a hex string
         const share1Hex = binaryArrayToHex(share1Binary);
 
         // XOR the secret binary with SHARE 1 binary to get SHARE 2
         const share2Binary = xorArrays(secretBinary, share1Binary);
+        console.log('Share 2 Binary:', share2Binary.join(''));
 
         // Convert SHARE 2 to a hex string
         const share2Hex = binaryArrayToHex(share2Binary);
@@ -106,12 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Convert SHARE 1 from hex to binary array
         const share1Binary = hexToBinaryArray(share1).slice(0, 186);
+        console.log('Share 1 Input Binary:', share1Binary.join(''));
 
         // Convert SHARE 2 from hex to binary array
         const share2Binary = hexToBinaryArray(share2).slice(0, 186);
+        console.log('Share 2 Input Binary:', share2Binary.join(''));
 
         // XOR SHARE 1 binary with SHARE 2 binary to reconstruct the secret
         const secretBinary = xorArrays(share1Binary, share2Binary);
+        console.log('Reconstructed Secret Binary:', secretBinary.join(''));
 
         // Convert the binary array back to the original secret base-6 string
         const reconstructedSecret = binaryToBase6(secretBinary);
